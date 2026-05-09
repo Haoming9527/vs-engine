@@ -1,81 +1,71 @@
-# vs-engine
+# ⚔️ VS-Engine
 
-A Next.js 16 application scaffold, built with React and Tailwind CSS.
+**Built for the AI Engineer Hackathon** 🚀
 
-## Table of Contents
+VS-Engine is a dynamic, AI-powered battle simulator built with Next.js 16. It pits dynamic characters against each other, generating photorealistic cinematic battle cards using cutting-edge generative AI, leveraging Fal.ai (Flux) for ultra-fast and stunning visual generation.
 
-- [Getting Started](#getting-started)
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Important Notes](#important-notes)
-- [Contributing](#contributing)
-- [License](#license)
+## 🌟 Hackathon Highlights
 
-## Getting Started
+- **AI-Generated Battle Portraits**: On-the-fly cinematic, photorealistic card generation of characters facing off in specific arenas with weapons and modifiers.
+- **Lightning Fast AI Inference**: Switched from standard GPT generation to high-speed **Fal.ai (Flux)** for realtime low-latency image delivery.
+- **Robust Next.js 16 Architecture**: Built on the bleeding edge of the Next.js ecosystem.
+- **Tailwind CSS UI**: A premium, visually stunning and interactive user interface designed to wow!
+- **Convex Backend**: Serverless, real-time sync for battle results, rankings, and match history.
+
+## 🛠 Technology Stack
+
+- **Framework:** Next.js 16
+- **Language:** TypeScript
+- **Backend / Database:** Convex
+- **AI Integration:** Fal.ai (Flux) / OpenAI
+- **Styling:** Tailwind CSS v4
+- **Typography:** Custom Geist fonts for a sleek look.
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have Node.js and npm (or yarn/pnpm/bun) installed.
+Ensure you have Node.js and npm (or yarn/pnpm/bun) installed.
 
-### Installation
+### Setup
 
-1.  Clone the repository:
-    ```bash
-    git clone <repository-url>
-    cd vs-engine
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    # or
-    yarn install
-    # or
-    pnpm install
-    # or
-    bun install
-    ```
+1. **Clone the repository:**
+   ```bash
+   git clone <repository-url>
+   cd vs-engine
+   ```
 
-### Running the Development Server
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-To start the local development server, run:
+3. **Configure Environment Variables:**
+   Create a `.env.local` or `.env` file in the root and add your keys:
+   ```env
+   # AI Generation
+   FAL_API_KEY=your_fal_key_here
+   OPENAI_API_KEY=your_openai_key_here
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   # Convex Configuration (if applicable)
+   CONVEX_DEPLOYMENT=your_deployment_url
+   NEXT_PUBLIC_CONVEX_URL=your_public_url
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+4. **Start the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-## Features
+5. **Let the Battle Begin:**
+   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application and start generating showdowns.
 
--   A basic Next.js 16 application structure.
--   Integrated with Tailwind CSS for styling.
--   Uses the Geist font family for typography.
--   Ready for further development and feature implementation.
+## 🏆 What's Next?
+Our roadmap post-hackathon includes:
+- Animated battle sequences (video generation).
+- User accounts and leaderboards.
+- Expanded AI personalities and dynamic battle narratives.
 
-## Technology Stack
+## 📜 License
 
--   **Framework:** Next.js 16
--   **Language:** TypeScript
--   **UI Library/Framework:** React
--   **Styling:** Tailwind CSS
--   **Font:** Geist Font
-
-## Important Notes
-
-**This project uses Next.js 16, which may introduce breaking changes.**
-It is crucial to consult the relevant guides within `node_modules/next/dist/docs/` for any specific API changes or new conventions before making significant modifications. Pay close attention to deprecation notices.
-
-## Contributing
-
-Contributions are welcome! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) (file not yet created) for details on our code of conduct, and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
+This project is licensed under the MIT License.
