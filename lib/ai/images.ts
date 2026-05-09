@@ -61,8 +61,8 @@ async function generateFighterImage(
     `Opponent context: ${opponent}.`,
     `Arena: ${input.environment}.`,
     `Modifier: ${input.weapon}. Constraint: ${input.constraint}.`,
-    "Dramatic lighting, the image need to be realistic, no text, no logos, high-detail poster art.",
-    "CRITICAL: Keep it completely family-friendly and safe for work. NO violence, NO blood, NO gore, NO aggressive attacks. Show the character posing dynamically but peacefully. This must pass strict safety filters.",
+    "Ultra-realistic, photorealistic, 8k resolution, cinematic lighting, hyper-detailed photography. It MUST look like a real-life photograph or high-end live-action movie still. DO NOT make it look like a cartoon, painting, illustration, or toy.",
+    "CRITICAL: Keep it completely family-friendly and safe for work. NO violence, NO blood, NO gore. Show the character posing dynamically but peacefully to pass strict safety filters.",
   ].join(" ");
 
   const response = await fetch("https://api.openai.com/v1/images/generations", {
