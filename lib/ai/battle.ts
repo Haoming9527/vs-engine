@@ -133,6 +133,7 @@ export async function generateBattleSimulation(
     "Generate only the opening round for now. Pick the fighter who wins round one as winner, even though the overall match can remain ongoing.",
     "Write a short 1 sentence fighterADescription and fighterBDescription. If the user supplied a dossier, compress and clarify it. If not, infer useful context from the fighter name so future rounds know who they are.",
     "Rate each fighter with letter stats. Power and speed still include numeric values, while range, defence, intelligent, and developmentPotential use A, B, C, D, E, Infinite, Complete, None, or ?.",
+    "CRITICAL AND NON-NEGOTIABLE: The outcome MUST be strictly realistic and based on the sheer physical reality of the fighters. DO NOT use 'underdog' tropes, 'surprising speed', or 'lucky first strikes' to let a weak creature survive against a massive powerhouse. If a normal ant fights a crocodile or a superhero, the ant dies instantly. No exceptions. The vastly superior fighter must win effortlessly with overwhelming logic.",
     "Return only the requested JSON shape.",
   ].join("\n");
 
@@ -203,6 +204,7 @@ export async function generateInterventionRound({
     `Existing rounds: ${JSON.stringify(battle.rounds)}`,
     `User interference: ${interference}`,
     "If this is round 3 or later and there is a decisive outcome, set status to finished and pick a winner. Otherwise keep status ongoing.",
+    "CRITICAL: Be completely objective and impartial. Base the outcome strictly and realistically on their actual abilities and the interference. Do NOT artificially balance the fight if there is a massive mismatch.",
     "Return only the requested JSON shape.",
   ].join("\n");
 
@@ -312,7 +314,7 @@ function normalizeIntervention(
   const status = data.status === "finished" ? "finished" : "ongoing";
   const winner =
     status === "finished"
-      ? String(data.winner || battle.fighterA)
+      ? pickWinner(String(data.winner || ""), battle.fighterA, battle.fighterB)
       : String(data.winner || "Undecided");
 
   return {
@@ -374,10 +376,17 @@ function normalizeRating(value: unknown, fallbackScore: unknown): StandRating {
 }
 
 function pickWinner(value: string, fighterA: string, fighterB: string) {
-  const lower = value.toLowerCase();
-  if (lower.includes(fighterB.toLowerCase())) return fighterB;
-  if (lower.includes(fighterA.toLowerCase())) return fighterA;
-  return fighterA;
+  const lower = value.toLowerCase().trim();
+  const aLower = fighterA.toLowerCase().trim();
+  const bLower = fighterB.toLowerCase().trim();
+
+  if (lower === aLower || lower === "fighter a") return fighterA;
+  if (lower === bLower || lower === "fighter b") return fighterB;
+
+  if (lower.includes(bLower) && !lower.includes(aLower)) return fighterB;
+  if (lower.includes(aLower) && !lower.includes(bLower)) return fighterA;
+
+  return value || "Undecided";
 }
 
 function clampScore(value: unknown, fallback: number) {

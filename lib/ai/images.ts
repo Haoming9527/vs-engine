@@ -6,14 +6,38 @@ export type GeneratedImage = {
 };
 
 export async function generateFighterImages(input: BattleInput) {
-  const [fighterA, fighterB] = await Promise.allSettled([
-    generateFighterImage(input, "A"),
-    generateFighterImage(input, "B"),
-  ]);
+  let fighterA = null;
+  try {
+    fighterA = await generateFighterImage(input, "A");
+  } catch (error) {
+    console.error("Failed to generate Fighter A image:", error);
+    fighterA = await generateFallbackImage(input.fighterA);
+  }
+
+  let fighterB = null;
+  try {
+    fighterB = await generateFighterImage(input, "B");
+  } catch (error) {
+    console.error("Failed to generate Fighter B image:", error);
+    fighterB = await generateFallbackImage(input.fighterB);
+  }
 
   return {
-    fighterA: fighterA.status === "fulfilled" ? fighterA.value : null,
-    fighterB: fighterB.status === "fulfilled" ? fighterB.value : null,
+    fighterA,
+    fighterB,
+  };
+}
+
+async function generateFallbackImage(name: string): Promise<GeneratedImage> {
+  const url = `https://api.dicebear.com/9.x/bottts/svg?seed=${encodeURIComponent(name)}`;
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("Failed to fetch fallback image");
+  }
+  const arrayBuffer = await response.arrayBuffer();
+  return {
+    bytes: new Uint8Array(arrayBuffer),
+    contentType: "image/svg+xml",
   };
 }
 
@@ -37,7 +61,8 @@ async function generateFighterImage(
     `Opponent context: ${opponent}.`,
     `Arena: ${input.environment}.`,
     `Modifier: ${input.weapon}. Constraint: ${input.constraint}.`,
-    "Dramatic lighting, the image need to be realistic, no text, no logos, high-detail poster art, energetic but non-graphic.",
+    "Dramatic lighting, the image need to be realistic, no text, no logos, high-detail poster art.",
+    "CRITICAL: Keep it completely family-friendly and safe for work. NO violence, NO blood, NO gore, NO aggressive attacks. Show the character posing dynamically but peacefully. This must pass strict safety filters.",
   ].join(" ");
 
   const response = await fetch("https://api.openai.com/v1/images/generations", {
