@@ -1,3 +1,4 @@
+import { fal } from "@fal-ai/client";
 import type { BattleInput } from "@/lib/validation";
 
 export type GeneratedImage = {
@@ -45,10 +46,12 @@ async function generateFighterImage(
   input: BattleInput,
   side: "A" | "B",
 ): Promise<GeneratedImage> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.FAL_API_KEY || process.env.FAL_KEY;
   if (!apiKey) {
-    throw new Error("OpenAI is not configured.");
+    throw new Error("FAL API key is not configured.");
   }
+  
+  fal.config({ credentials: apiKey });
 
   const fighter = side === "A" ? input.fighterA : input.fighterB;
   const opponent = side === "A" ? input.fighterB : input.fighterA;
@@ -65,31 +68,27 @@ async function generateFighterImage(
     "CRITICAL: Keep it completely family-friendly and safe for work. NO violence, NO blood, NO gore. Show the character posing dynamically but peacefully to pass strict safety filters.",
   ].join(" ");
 
-  const response = await fetch("https://api.openai.com/v1/images/generations", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-1",
+  const { data } = await fal.subscribe("fal-ai/flux/schnell", {
+    input: {
       prompt,
-      size: "1024x1024",
-    }),
+      image_size: "square_hd",
+    },
   });
 
-  if (!response.ok) {
-    throw new Error(await response.text());
+  const imageUrl = (data as any).images?.[0]?.url;
+  if (!imageUrl) {
+    throw new Error("fal image generation returned no image data.");
   }
 
-  const data = await response.json();
-  const b64 = data.data?.[0]?.b64_json;
-  if (typeof b64 !== "string") {
-    throw new Error("OpenAI image generation returned no image data.");
+  const imageResponse = await fetch(imageUrl);
+  if (!imageResponse.ok) {
+    throw new Error("Failed to fetch generated image from fal URL.");
   }
+
+  const arrayBuffer = await imageResponse.arrayBuffer();
 
   return {
-    bytes: Buffer.from(b64, "base64"),
-    contentType: "image/png",
+    bytes: new Uint8Array(arrayBuffer),
+    contentType: "image/jpeg",
   };
 }
